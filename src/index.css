@@ -1,0 +1,4 @@
+@import "tailwindcss";
+body {
+  @apply dark:bg-radial-[at_25%_25%] from-yellow-300 to-black to-75%;
+}

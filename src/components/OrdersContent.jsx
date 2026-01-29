@@ -18,7 +18,7 @@ const OrdersContent = () => {
                         <h2 className="text-white font-semibold text-sm flex"><FaShoppingBag className="text-lg mr-2"></FaShoppingBag>Data Orders</h2>
                         <button class="rounded-lg border border-yellow-600 bg-linear-to-b from-yellow-300 to-yellow-600 hover:bg-transparen dark:hover:from-yellow-600 dark:hover:to-yellow-900 p-2 text-sm font-medium dark:text-white transition-colors flex"><FaRegPlusSquare className="text-lg mr-2"></FaRegPlusSquare>Add Orders</button>
                     </div>
-                    <div className="p-6">
+                    <div className="p-6 overflow-x-auto">
                         <table className="min-w-full text-sm">
                             <thead className="text-gray-400 border-b border-gray-800">
                                 <tr>
@@ -38,7 +38,7 @@ const OrdersContent = () => {
                                         <td className="py-3">12/12/2025</td>
                                         <td className="py-3">$29.99</td>
                                         <td className="py-3">
-                                            <div class="text-center rounded-lg border border-green-600 bg-linear-to-b from-green-400 to-green-600 hover:bg-transparen dark:hover:from-green-600 dark:hover:to-green-900 p-1 text-sm font-medium dark:text-white transition-colors mr-2">Processing</div>
+                                            <div class="text-center w-24 rounded-lg border border-green-600 bg-linear-to-b from-green-400/50 to-green-600/50 hover:bg-transparen dark:hover:from-green-600 dark:hover:to-green-900 p-1 text-sm font-medium dark:text-white transition-colors mr-2">Processing</div>
                                         </td>
                                         <td className="py-3">
                                             <div className="flex gap-2">

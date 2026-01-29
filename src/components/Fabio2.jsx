@@ -8,16 +8,16 @@ const StatCard1 = ({ value, label }) => (
 );
 const Fabio = () =>{
     return(
-    <div className="relative md:flex">
+    <div className="relative lg:flex">
         <img src="diggia.png" className="h-96 lg:h-1/12 z-10 md:z-20" alt="" />
-        <div className="mt-34 ml-48 mb-32">
-            <div className="absolute top-4 md:top-12 right-0 md:right-18 z-30">
-                <img src="49.png" className="md:float-left h-24 md:h-26 lg:h-32 mr-5 mt-2" alt="" />
-                <h1 className="hidden md:block text-2xl md:text-4xl lg:text-6xl md:font-extrabold md:leading-tight md:text-black md:dark:text-white">FABIO DI GIANNANTONIO</h1>
+        <div className="mt-34 ml-48 lg:mb-96 mb-32">
+            <div className="absolute top-4 md:top-12 right-0 md:right-24 lg:right-18 z-30">
+                <img src="49.png" className="lg:float-left h-24 md:h-24 lg:h-32 mr-5 mt-2" alt="" />
+                <h1 className="hidden md:block text-2xl md:text-3xl lg:text-6xl md:font-extrabold md:leading-tight md:text-black md:dark:text-white">FABIO DI GIANNANTONIO</h1>
             </div>
-            <div className="absolute z-20 md:z-10 top-42 left-0 md:left-12 md:pl-96 mt-18 bg-linear-to-l from-white to-gray-800 text-white dark:text-black dark:bg-linear-to-r dark:from-white dark:to-white/50 p-6 md:p-4 h-96 right-0 rounded-lg">
-                <img src="italian.png" className="float-left h-20 md:h-38 my-5 mx-5 rounded-2xl" alt="" />
-                <ul className="md:text-md">
+            <div className="absolute z-20 lg:z-10 top-42 md:top-32 lg:top-42 left-0 lg:left-12 lg:pl-96 mt-18 bg-linear-to-l from-white to-gray-800 text-white dark:text-black dark:bg-linear-to-r dark:from-white dark:to-white/50 p-6 lg:p-4 h-96 right-0 rounded-lg">
+                <img src="italian.png" className="float-left h-20 lg:h-38 my-5 mx-5 rounded-2xl" alt="" />
+                <ul className="text-md">
                     <li><span className="font-bold">Rider Name :</span> Fabio Di Gianantonio</li><hr className="my-3"></hr>
                     <li><span className="font-bold">Nationality :</span> Italy</li><hr className="my-3"></hr>
                     <li><span className="font-bold">Date of Birth :</span> 10/10/1998</li><hr className="my-3"></hr>
@@ -27,8 +27,8 @@ const Fabio = () =>{
                 </ul>
             </div>
         </div>
-        <div className="flex justify-center pt-34 md:absolute md:-bottom-15 md:left-12 z-30">
-            <div className="grid grid-cols-2 md:grid-cols-6 gap-6 items-center justify-center">
+        <div className="flex justify-center pt-34 md:pt-26 lg:absolute lg:-bottom-15 lg:left-12 z-30">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 items-center justify-center">
                 <StatCard1 value="0" label="Championship"></StatCard1>
                 <StatCard1 value="11" label="Season"></StatCard1>
                 <StatCard1 value="4" label="Victories"></StatCard1>

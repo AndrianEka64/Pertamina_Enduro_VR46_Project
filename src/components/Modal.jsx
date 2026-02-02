@@ -5,8 +5,8 @@ const Modal = ({ isOpen, onClose }) => {
     return (
         <>
             <div className="fixed inset-0 z-50 grid place-content-center bg-white/22 dark:bg-black/22 p-4" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-                <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-lg dark:bg-gray-900">
-                    <div className="flex items-start justify-between">
+                <div className="w-full max-w-md rounded-lg border border-gray-700 bg-white shadow-lg dark:bg-gray-900">
+                    <div className="flex items-start justify-between p-6  border-b border-gray-700">
                         <h2 id="modalTitle" className="text-xl font-bold text-gray-900 sm:text-2xl dark:text-white">Preview</h2>
                         <button onClick={onClose} type="button" className="-me-4 -mt-4 rounded-full p-2 text-gray-400 transition-colors hover:bg-gray-50 hover:text-gray-600 focus:outline-none dark:text-gray-500 dark:hover:bg-gray-800 dark:hover:text-gray-300" aria-label="Close">
                             <svg xmlns="http://www.w3.org/2000/svg" className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -14,10 +14,12 @@ const Modal = ({ isOpen, onClose }) => {
                             </svg>
                         </button>
                     </div>
-                    <div className="mt-4">
+                    <div className="mt-4 p-6">
                         <p className="text-pretty text-gray-700 dark:text-gray-200">
-                            <div className="flex gap-3">
-                                <img src="merch2.webp" className="h-64 rounded-2xl" alt="" />
+                            <div className="grid grid-cols-1 md:grid-cols-2">
+                                <div className="flex justify-center">
+                                    <img src="merch2.webp" className="h-64 rounded-2xl" alt="" />
+                                </div>
                                 <ul className="text-md">
                                     <li className="my-3"><span className="font-bold">Product Name :</span> Pertamina Enduro VR46 Racing Team T-Shirt (yellow)</li><hr></hr>
                                     <li className="my-3"><span className="font-bold">Category :</span> T-Shirt</li>
@@ -29,6 +31,15 @@ const Modal = ({ isOpen, onClose }) => {
                                     </li>
                                 </ul>
                             </div>
+                        </p>
+                        <hr className="my-2"></hr>
+                        <p className="text-md">
+                            <span className="font-bold">Description</span>
+                            <p className="line-clamp-3">
+                                Official replica T-shirt of the Pertamina Enduro VR46 Racing Team worn by Franco Morbidelli, Fabio Di Giannantonio and the entire team during the 2026 season. Made of polyester, in collaboration with Kappa, it features the Pertamina Enduro VR46 Racing Team logo on the chest and back and the team's sponsor logos on the sleeves. Contrasting black and red details complete the design.
+                                Washing: Medium washing in cold water ; Do not bleach ; No drum ; Ironing Max 110 ; Do not dry clean
+                                Composition: 100%POLYESTER
+                            </p>
                         </p>
                     </div>
                 </div>

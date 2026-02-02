@@ -2,6 +2,7 @@ import { FaDollarSign } from "react-icons/fa";
 import { FaShoppingCart } from "react-icons/fa";
 import { FaBoxOpen } from "react-icons/fa";
 import { FaUserFriends } from "react-icons/fa";
+import FooterDashboard from "./FooterDashboard";
 
 const Stats = ({ value, label, icon }) => {
     return (
@@ -58,7 +59,7 @@ const DashboardContent = () => {
                                             <td className="py-3">$29.99</td>
                                             <td className="py-3">T-Shirt</td>
                                             <td className="py-3">
-                                                <div class="text-center w-24 rounded-lg border border-green-600 bg-linear-to-b from-green-400/50 to-green-600/50 hover:bg-transparen dark:hover:from-green-600 dark:hover:to-green-900 p-1 text-sm font-medium dark:text-white transition-colors mr-2">In Stock</div>
+                                                <div class="text-center w-24 rounded-lg border border-green-600 bg-linear-to-b from-green-400/50 to-green-600/50 hover:bg-transparen dark:hover:from-green-600 dark:hover:to-green-900 p-1 text-sm font-medium dark:text-white transition-colors mr-2">Available</div>
                                             </td>
                                         </tr>
                                     ))}
@@ -68,9 +69,7 @@ const DashboardContent = () => {
                     </div>
                     <div className="rounded-xl bg-[#0B0F1A] border border-gray-800">
                         <div className="px-6 h-12 flex items-center border-b border-gray-800">
-                            <h2 className="text-white font-semibold text-sm">
-                                Recent Orders
-                            </h2>
+                            <h2 className="text-white font-semibold text-sm">Orders Overview</h2>
                         </div>
                         <div className="p-6 space-y-4 text-sm">
                             <div className="flex justify-between text-gray-300">
@@ -84,6 +83,7 @@ const DashboardContent = () => {
                         </div>
                     </div>
                 </div>
+                <FooterDashboard></FooterDashboard>
             </div>
         </>
     )

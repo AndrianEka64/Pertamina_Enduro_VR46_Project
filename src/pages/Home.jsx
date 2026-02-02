@@ -4,6 +4,7 @@ import Franco from "../components/Franco2";
 import { Link } from "react-router-dom";
 import Footer from "../components/Footerr";
 import Navbar from "../components/Navbarr";
+import { FaShoppingCart } from "react-icons/fa";
 
 const WideStatCard = ({ value, label }) => (
     <div className="md:h-44 md:w-96 rounded-tr-4xl rounded-bl-4xl bg-linear-to-t from-gray-600 to-black 
@@ -95,83 +96,37 @@ const Home = () => {
             <div className="dark:bg-radial-[at_100%_50%] from-yellow-300 to-black to-65% ">
                 <div className="container mx-auto pb-35 border-b border-l rounded-bl-4xl border-yellow-300 ot-10">
                     <h1 className="font-bold text-2xl md:text-3xl lg:text-5xl italic dark:text-white w-50 md:w-96 text-center p-2 rounded-br-4xl border-t-2 border-b-2 border-r-2 border-yellow-300">MERCHANDISE</h1>
+
                     <div id="merchandise" className="container mx-auto px-4">
                         <div className="flex justify-end">
                             <Link to="/merchandise" className="mt-4 object-right bg-yellow-300 hover:bg-yellow-600 focus:outline-2 focus:outline-yellow-600 text-black p-3 font-bold mb-4 rounded-lg">View All</Link>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            <div className="bg-gray-300 border-2 border-gray-500 rounded-lg shadow-lg relative">
-                                <div className="absolute top-0 right-0">
-                                    <div className="bg-red-600 rounded-bl-lg rounded-tr-lg">
-                                        <h1 className="text-white font-sans p-2 text-sm">14%</h1>
+                            {[1, 2, 3, 4, 5, 6,7 ,8].map((i) => (
+                                <div key={i} className="bg-gray-300 border-2 border-gray-500 rounded-lg shadow-lg relative">
+                                    <div className="absolute top-0 right-0">
+                                        <div className="bg-red-600 rounded-bl-lg rounded-tr-lg">
+                                            <h1 className="text-white font-sans p-2 text-sm">{i}</h1>
+                                        </div>
+                                    </div>
+                                    <div className="bg-white w-full h-64 overflow-hidden rounded-t-lg">
+                                        <Link to="/detail">
+                                            <img src="merch2.webp" alt="merchandise" className="transition duration-300 w-full h-64 object-cover object-top hover:scale-105" />
+                                        </Link>
+                                    </div>
+                                    <div className="container mx-auto p-5">
+                                        <h2 className="text-xl font-bold text-black">Pertamina Enduro VR46 Racing Team T-Shirt</h2>
+                                        <div className="flex">
+                                            <p className="text-red-600 font-bold mt-2 mr-2">$29.99</p>
+                                            <p className="text-gray-600 font-bold mt-2 line-through text-sm">$35</p>
+                                        </div>
+                                        <div className="flex gap-3">
+                                            <Link to="/detail" className="text-center mt-4 w-full bg-linear-to-b from-yellow-300 to-yellow-600 hover:bg-transparen dark:hover:from-yellow-600 dark:hover:to-yellow-900 text-black py-2 rounded-full font-bold">Details</Link>
+                                            <button className="flex justify-center items-center mt-4 w-24 border-red-600 bg-linear-to-b from-red-500 to-red-600 hover:bg-transparen dark:hover:from-red-600 dark:hover:to-red-900 text-white py-2 rounded-full font-bold"> <FaShoppingCart className="text-lg"></FaShoppingCart></button>
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="bg-white w-full h-64 overflow-hidden rounded-t-lg">
-                                    <img src="merch1.jpg" alt="merchandise" className="transition duration-300 w-full h-64 object-cover object-top hover:scale-105 " />
-                                </div>
-                                <div className="container mx-auto p-5">
-                                    <h2 className="text-xl font-bold text-black">Pertamina Enduro VR46 Racing Team T-Shirt</h2>
-                                    <div className="flex">
-                                        <p className="text-red-600 font-bold mt-2 mr-2">$29.99</p>
-                                        <p className="text-gray-600 font-bold mt-2 line-through text-sm">$35</p>
-                                    </div>
-                                    <button className="mt-4 w-full bg-red-500 hover:bg-red-700 text-white py-2 rounded-full">Add to cart</button>
-                                </div>
-                            </div>
-                            <div className="bg-gray-300 border-2 border-gray-500 rounded-lg shadow-lg relative">
-                                <div className="absolute top-0 right-0">
-                                    <div className="bg-red-600 rounded-bl-lg rounded-tr-lg">
-                                        <h1 className="text-white font-sans p-2 text-sm">14%</h1>
-                                    </div>
-                                </div>
-                                <div className="bg-white w-full h-64 overflow-hidden rounded-t-lg">
-                                    <img src="merch2.webp" alt="merchandise" className="transition duration-300 w-full h-64 object-cover object-top hover:scale-105" />
-                                </div>
-                                <div className="container mx-auto p-5">
-                                    <h2 className="text-xl font-bold text-black">Pertamina Enduro VR46 Racing Team T-Shirt</h2>
-                                    <div className="flex">
-                                        <p className="text-red-600 font-bold mt-2 mr-2">$29.99</p>
-                                        <p className="text-gray-600 font-bold mt-2 line-through text-sm">$35</p>
-                                    </div>
-                                    <button className="mt-4 w-full bg-red-500 hover:bg-red-700 text-white py-2 rounded-full">Add to cart</button>
-                                </div>
-                            </div>
-                            <div className="bg-gray-300 border-2 border-gray-500 rounded-lg shadow-lg relative">
-                                <div className="absolute top-0 right-0">
-                                    <div className="bg-red-600 rounded-bl-lg rounded-tr-lg">
-                                        <h1 className="text-white font-sans p-2 text-sm">14%</h1>
-                                    </div>
-                                </div>
-                                <div className="bg-white w-full h-64 overflow-hidden rounded-t-lg">
-                                    <img src="merch3.webp" alt="merchandise" className="transition duration-300 w-full h-64 object-cover object-center hover:scale-105" />
-                                </div>
-                                <div className="container mx-auto p-5">
-                                    <h2 className="text-xl font-bold text-black">Pertamina Enduro VR46 Racing Team T-Shirt</h2>
-                                    <div className="flex">
-                                        <p className="text-red-600 font-bold mt-2 mr-2">$29.99</p>
-                                        <p className="text-gray-600 font-bold mt-2 line-through text-sm">$35</p>
-                                    </div>
-                                    <button className="mt-4 w-full bg-red-500 hover:bg-red-700 text-white py-2 rounded-full">Add to cart</button>
-                                </div>
-                            </div>
-                            <div className="bg-gray-300 border-2 border-gray-500 rounded-lg shadow-lg relative">
-                                <div className="absolute top-0 right-0">
-                                    <div className="bg-red-600 rounded-bl-lg rounded-tr-lg">
-                                        <h1 className="text-white font-sans p-2 text-sm">14%</h1>
-                                    </div>
-                                </div>
-                                <div className="bg-white w-full h-64 overflow-hidden rounded-t-lg">
-                                    <img src="merch1.jpg" alt="merchandise" className="transition duration-300 w-full h-64 object-cover object-center hover:scale-105" />
-                                </div>
-                                <div className="container mx-auto p-5">
-                                    <h2 className="text-xl font-bold text-black">Pertamina Enduro VR46 Racing Team T-Shirt</h2>
-                                    <div className="flex">
-                                        <p className="text-red-600 font-bold mt-2 mr-2">$29.99</p>
-                                        <p className="text-gray-600 font-bold mt-2 line-through text-sm">$35</p>
-                                    </div>
-                                    <button className="mt-4 w-full bg-red-500 hover:bg-red-700 text-white py-2 rounded-full">Add to cart</button>
-                                </div>
-                            </div>
+                            ))}
                         </div>
                     </div>
                 </div>

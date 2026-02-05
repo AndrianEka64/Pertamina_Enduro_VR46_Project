@@ -4,8 +4,43 @@ import { FaTrashAlt } from "react-icons/fa";
 import { FaPen } from "react-icons/fa";
 import Breadcrumb from "./Breadcrumb";
 import FooterDashboard from "./FooterDashboard";
+import AddOrders from "./addOrders";
+import { useEffect, useState } from "react";
+import api from "../service/api";
+import EditOrders from "./EditOrders";
 
 const OrdersContent = () => {
+    const [orders, setOrders] = useState([]);
+    const [openAddOrders, setOpenAddOrders] = useState(false)
+    const [openEditOrders, setOpenEditOrders] = useState(false)
+    const [selectedOrder, setSelectedOrder] = useState(null);
+    const fetchOrders = async () => {
+        try {
+            const response = await api.get("/orders");
+            setOrders(response.data.data);
+        } catch (error) {
+            console.error("Gagal mengambil data orders:", error);
+        }
+    };
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchOrders();
+    }, []);
+    const handleEditClick = (order) => {
+        setSelectedOrder(order); 
+        setOpenEditOrders(true); 
+    };
+    const handleDelete = async (id) => {
+        if (window.confirm("Yakin ingin menghapus order ini?")) {
+            try {
+                await api.delete(`/orders/delete/${id}`);
+                fetchOrders();
+            } catch (err) {
+                console.error(err.response?.data || err);
+                alert("Gagal menghapus data");
+            }
+        }
+    };
     return (
         <>
             <div className="max-w-full px-10 py-8 dark:bg-gray-900 min-h-screen">
@@ -17,7 +52,7 @@ const OrdersContent = () => {
                 <div className="rounded-xl bg-[#0B0F1A] border border-gray-800">
                     <div className="px-6 py-4 h-24 border-b border-gray-800">
                         <div className="flex items-center justify-between">
-                            <h2 className="text-white font-semibold text-sm flex"><FaShoppingBag className="text-lg mr-2"></FaShoppingBag>Data Orders | 5 items</h2>
+                            <h2 className="text-white font-semibold text-sm flex"><FaShoppingBag className="text-lg mr-2"></FaShoppingBag>Data Orders | {orders.length} items</h2>
                             <div className="flex gap-2">
                                 <div class="relative">
                                     <input class="text-white appearance-none border-2 pl-10 border-gray-800 hover:border-gray-800 transition-colors rounded-md w-full py-2 px-3 leading-tight focus:outline-none focus:ring-yellow-600 focus:border-yellow-600 focus:shadow-outline" id="username" type="text" placeholder="Search Orders" />
@@ -32,11 +67,12 @@ const OrdersContent = () => {
                                         </svg>
                                     </div>
                                 </div>
-                                <button class="rounded-lg border border-yellow-600 bg-linear-to-b from-yellow-300 to-yellow-600 hover:bg-transparen dark:hover:from-yellow-600 dark:hover:to-yellow-900 p-2 text-sm font-medium dark:text-white transition-colors flex"><FaRegPlusSquare className="text-lg mr-2"></FaRegPlusSquare>Add Orders</button>
+                                <button onClick={() => setOpenAddOrders(true)} class="rounded-lg border border-yellow-600 bg-linear-to-b from-yellow-300 to-yellow-600 hover:bg-transparen dark:hover:from-yellow-600 dark:hover:to-yellow-900 p-2 text-sm font-medium dark:text-white transition-colors flex"><FaRegPlusSquare className="text-lg mr-2"></FaRegPlusSquare>Add Orders</button>
+                                <AddOrders apOpen={openAddOrders} apClose={() => setOpenAddOrders(false)} refreshData={fetchOrders}></AddOrders>
                             </div>
                         </div>
                         <div className="flex items-center justify-between text-gray-400">
-                            <h1 className="text-sm mt-2">Showing 5 of 5 orders</h1>
+                            <h1 className="text-sm mt-2">Showing {orders.length} of {orders.length} orders</h1>
                             <h1 className="text-sm mt-2">Last Update : 2 minutes ago</h1>
                         </div>
                     </div>
@@ -46,6 +82,7 @@ const OrdersContent = () => {
                                 <tr>
                                     <th className="py-2 text-left">No</th>
                                     <th className="py-2 text-left">Customer Name</th>
+                                    <th className="py-2 text-left">Product</th>
                                     <th className="py-2 text-left">Order Date</th>
                                     <th className="py-2 text-left">Total Amount</th>
                                     <th className="py-2 text-left">Order Status</th>
@@ -53,19 +90,27 @@ const OrdersContent = () => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-800 text-gray-200">
-                                {[1, 2, 3, 4, 5].map((i) => (
-                                    <tr key={i} className="hover:bg-gray-800/40 transition">
-                                        <td className="py-3">{i}</td>
-                                        <td className="py-3">Aleix</td>
-                                        <td className="py-3">12/12/2025</td>
-                                        <td className="py-3">$29.99</td>
+                                {orders.map((order) => (
+                                    <tr key={order} className="hover:bg-gray-800/40 transition">
+                                        <td className="py-3">{order.id}</td>
+                                        <td className="py-3">{order.name}</td>
+                                        <td className="py-3">{order.product_name}</td>
+                                        <td className="py-3">{order.order_date}</td>
+                                        <td className="py-3">${order.total_amount}</td>
                                         <td className="py-3">
-                                            <div class="text-center w-24 rounded-lg border border-green-600 bg-linear-to-b from-green-400/50 to-green-600/50 hover:bg-transparen dark:hover:from-green-600 dark:hover:to-green-900 p-1 text-sm font-medium dark:text-white transition-colors mr-2">Processing</div>
+                                            <span className={`px-3 py-1 rounded-lg border font-medium ${order.order_status === 'completed'
+                                                ? 'border border-green-600 bg-linear-to-b from-green-400/50 to-green-600/50 hover:bg-transparen dark:hover:from-green-600 dark:hover:to-green-900'
+                                                : order.order_status === 'cancelled'
+                                                    ? 'border border-red-600 bg-linear-to-b from-red-400 to-red-600 hover:bg-transparen dark:hover:from-red-600 dark:hover:to-red-900'
+                                                    : 'border border-yellow-600 bg-linear-to-b from-yellow-300 to-yellow-600 hover:bg-transparen dark:hover:from-yellow-600 dark:hover:to-yellow-900'}`}>
+                                                {order.order_status}
+                                            </span>
                                         </td>
                                         <td className="py-3">
                                             <div className="flex gap-2">
-                                                <button class="rounded-lg border border-yellow-600 bg-linear-to-b from-yellow-300 to-yellow-600 hover:bg-transparen dark:hover:from-yellow-600 dark:hover:to-yellow-900 p-2 text-sm font-medium dark:text-white transition-colors"><FaPen className="text-lg"></FaPen></button>
-                                                <button class="rounded-lg border border-red-600 bg-linear-to-b from-red-400 to-red-600 hover:bg-transparen dark:hover:from-red-600 dark:hover:to-red-900 p-2 text-sm font-medium dark:text-white transition-colors"><FaTrashAlt className="text-lg"></FaTrashAlt></button>
+                                                <EditOrders apOpen={openEditOrders} apClose={() => setOpenEditOrders(false)} refreshData={fetchOrders} orderData={selectedOrder}></EditOrders>
+                                                <button onClick={() => handleEditClick(order)} class="rounded-lg border border-yellow-600 bg-linear-to-b from-yellow-300 to-yellow-600 hover:bg-transparen dark:hover:from-yellow-600 dark:hover:to-yellow-900 p-2 text-sm font-medium dark:text-white transition-colors"><FaPen className="text-lg"></FaPen></button>
+                                                <button onClick={() => handleDelete(order.id)} class="rounded-lg border border-red-600 bg-linear-to-b from-red-400 to-red-600 hover:bg-transparen dark:hover:from-red-600 dark:hover:to-red-900 p-2 text-sm font-medium dark:text-white transition-colors"><FaTrashAlt className="text-lg"></FaTrashAlt></button>
                                             </div>
                                         </td>
                                     </tr>

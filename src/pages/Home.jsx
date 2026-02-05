@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Fabio from "../components/Fabio2";
 import Franco from "../components/Franco2";
 import { Link } from "react-router-dom";
 import Footer from "../components/Footerr";
 import Navbar from "../components/Navbarr";
 import { FaShoppingCart } from "react-icons/fa";
+import api from "../service/api";
 
 const WideStatCard = ({ value, label }) => (
     <div className="md:h-44 md:w-96 rounded-tr-4xl rounded-bl-4xl bg-linear-to-t from-gray-600 to-black 
@@ -23,6 +24,18 @@ const StatCard = ({ value, label }) => (
     </div>
 );
 const Home = () => {
+    const [products, setProducts] = useState([]);
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await api.get("/product");
+                setProducts(response.data.data.slice(0, 8));
+            } catch (error) {
+                console.error("Error fetching products:", error);
+            }
+        };
+        fetchProducts();
+    }, []);
     const [kondisiAktif, setkondisiAktif] = useState("fabio");
     const description = "The Pertamina Enduro VR46 Racing Team is a professional MotoGP team founded and owned by nine-time World Champion Valentino Rossi. Backed by title sponsor Pertamina Enduro and powered by Ducati Desmosedici machinery, the team competes in the MotoGP World Championship with a strong focus on performance, innovation, and rider development, embodying the long-term vision of the VR46 Riders Academy.";
     return (
@@ -96,32 +109,31 @@ const Home = () => {
             <div className="dark:bg-radial-[at_100%_50%] from-yellow-300 to-black to-65% ">
                 <div className="container mx-auto pb-35 border-b border-l rounded-bl-4xl border-yellow-300 ot-10">
                     <h1 className="font-bold text-2xl md:text-3xl lg:text-5xl italic dark:text-white w-50 md:w-96 text-center p-2 rounded-br-4xl border-t-2 border-b-2 border-r-2 border-yellow-300">MERCHANDISE</h1>
-
                     <div id="merchandise" className="container mx-auto px-4">
                         <div className="flex justify-end">
                             <Link to="/merchandise" className="mt-4 object-right bg-yellow-300 hover:bg-yellow-600 focus:outline-2 focus:outline-yellow-600 text-black p-3 font-bold mb-4 rounded-lg">View All</Link>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            {[1, 2, 3, 4, 5, 6,7 ,8].map((i) => (
-                                <div key={i} className="bg-gray-300 border-2 border-gray-500 rounded-lg shadow-lg relative">
+                            {products.map((product, index) => (
+                                <div key={product.id} className="bg-gray-300 border-2 border-gray-500 rounded-lg shadow-lg relative">
                                     <div className="absolute top-0 right-0">
                                         <div className="bg-red-600 rounded-bl-lg rounded-tr-lg">
-                                            <h1 className="text-white font-sans p-2 text-sm">{i}</h1>
+                                            <h1 className="text-white font-sans p-2 text-sm">{index + 1}</h1>
                                         </div>
                                     </div>
                                     <div className="bg-white w-full h-64 overflow-hidden rounded-t-lg">
-                                        <Link to="/detail">
-                                            <img src="merch2.webp" alt="merchandise" className="transition duration-300 w-full h-64 object-cover object-top hover:scale-105" />
+                                        <Link to={`/detail/${product.id}`}>
+                                            <img src={product.image} alt={product.name} className="transition duration-300 w-full h-64 object-cover object-top hover:scale-105" />
                                         </Link>
                                     </div>
                                     <div className="container mx-auto p-5">
-                                        <h2 className="text-xl font-bold text-black">Pertamina Enduro VR46 Racing Team T-Shirt</h2>
+                                        <h2 className="text-xl font-bold text-black">{product.name}</h2>
                                         <div className="flex">
-                                            <p className="text-red-600 font-bold mt-2 mr-2">$29.99</p>
+                                            <p className="text-red-600 font-bold mt-2 mr-2">{product.price}</p>
                                             <p className="text-gray-600 font-bold mt-2 line-through text-sm">$35</p>
                                         </div>
                                         <div className="flex gap-3">
-                                            <Link to="/detail" className="text-center mt-4 w-full bg-linear-to-b from-yellow-300 to-yellow-600 hover:bg-transparen dark:hover:from-yellow-600 dark:hover:to-yellow-900 text-black py-2 rounded-full font-bold">Details</Link>
+                                            <Link to={`/detail/${product.id}`} className="text-center mt-4 w-full bg-linear-to-b from-yellow-300 to-yellow-600 hover:bg-transparen dark:hover:from-yellow-600 dark:hover:to-yellow-900 text-black py-2 rounded-full font-bold">Details</Link>
                                             <button className="flex justify-center items-center mt-4 w-24 border-red-600 bg-linear-to-b from-red-500 to-red-600 hover:bg-transparen dark:hover:from-red-600 dark:hover:to-red-900 text-white py-2 rounded-full font-bold"> <FaShoppingCart className="text-lg"></FaShoppingCart></button>
                                         </div>
                                     </div>

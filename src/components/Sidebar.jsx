@@ -3,8 +3,21 @@ import { FaTachometerAlt } from "react-icons/fa"
 import { FaShoppingBag } from "react-icons/fa"
 import { FaBoxOpen } from "react-icons/fa"
 import { FaSignOutAlt } from "react-icons/fa"
+import api from "../service/api"
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
+    const handleLogout = async () => {
+        try {
+            await api.get("/logout");
+            alert("logged out successfully");
+        } catch {
+            alert("Logout error (token mungkin sudah tidak valid)");
+        } finally {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            window.location.href = "/login";
+        }
+    }
     return (
         <>
             <div onClick={() => setSidebarOpen(false)} className={`fixed inset-0 bg-black/50 z-40 md:hidden transition-opacity ${sidebarOpen ? "opacity-100 visible" : "opacity-0 invisible"}`}></div>
@@ -35,7 +48,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                                 <FaShoppingBag className="text-lg"></FaShoppingBag>Orders
                             </NavLink>
                         </li>
-                        <li><a href="#" className="flex gap-x-3 rounded-lg px-4 py-2 text-sm font-medium dark:text-gray-400 dark:hover:bg-gray-600 hover:bg-yellow-700/50 hover:text-white transition"><FaSignOutAlt className="text-lg"></FaSignOutAlt>Logout</a></li>
+                        <li>
+                            <button onClick={handleLogout} className="flex w-full items-center gap-x-3 rounded-lg px-4 py-2 text-sm font-medium text-black dark:text-gray-300 dark:hover:bg-gray-600 hover:bg-yellow-700/50 hover:text-white transition">
+                                <FaSignOutAlt className="text-lg" />Logout
+                            </button>
+                        </li>
                     </ul>
                 </div>
                 <div className="absolute inset-x-0 bottom-0 border-t dark:border-gray-100">

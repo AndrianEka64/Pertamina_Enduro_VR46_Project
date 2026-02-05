@@ -1,6 +1,6 @@
-const Modal = ({ isOpen, onClose }) => {
-    if (!isOpen) {
-        return null
+const Modal = ({ isOpen, onClose, product }) => {
+    if (!isOpen || !product) {
+        return null;
     }
     return (
         <>
@@ -17,17 +17,23 @@ const Modal = ({ isOpen, onClose }) => {
                     <div className="mt-4 p-6">
                         <p className="text-pretty text-gray-700 dark:text-gray-200">
                             <div className="grid grid-cols-1 md:grid-cols-2">
-                                <div className="flex justify-center">
-                                    <img src="merch2.webp" className="h-64 rounded-2xl" alt="" />
+                                <div className="flex justify-center mr-3">
+                                    <img src={product.image} className="h-64 rounded-2xl" alt="" />
                                 </div>
                                 <ul className="text-md">
-                                    <li className="my-3"><span className="font-bold">Product Name :</span> Pertamina Enduro VR46 Racing Team T-Shirt (yellow)</li><hr></hr>
-                                    <li className="my-3"><span className="font-bold">Category :</span> T-Shirt</li>
-                                    <li className="my-3"><span className="font-bold">Price :</span> $29.99</li>
-                                    <li className="my-3"><span className="font-bold">Stock :</span> 200</li>
+                                    <li className="my-3"><span className="font-bold">Product Name :</span> {product.name}</li><hr></hr>
+                                    <li className="my-3"><span className="font-bold">Category :</span> {product.category}</li>
+                                    <li className="my-3"><span className="font-bold">Price :</span> ${product.price}</li>
+                                    <li className="my-3"><span className="font-bold">Stock :</span> {product.stock}</li>
                                     <li className="my-3">
                                         <span className="font-bold block">Status :</span>
-                                        <div class="text-center w-full mt-4 rounded-lg border border-green-600 bg-linear-to-b from-green-400/50 to-green-600/50 hover:bg-transparen dark:hover:from-green-600 dark:hover:to-green-900 p-1 text-sm font-medium dark:text-white transition-colors">Available</div>
+                                        <div
+                                            className={`text-center w-full mt-4 rounded-lg border p-1 text-sm font-medium transition-colors ${product.status === "available"
+                                                    ? "border-green-600 bg-linear-to-b from-green-400/50 to-green-600/50"
+                                                    : "border-red-600 bg-linear-to-b from-red-400/50 to-red-600/50"
+                                                }`}>
+                                            {product.status}
+                                        </div>
                                     </li>
                                 </ul>
                             </div>
@@ -36,9 +42,7 @@ const Modal = ({ isOpen, onClose }) => {
                         <p className="text-md">
                             <span className="font-bold">Description</span>
                             <p className="line-clamp-3">
-                                Official replica T-shirt of the Pertamina Enduro VR46 Racing Team worn by Franco Morbidelli, Fabio Di Giannantonio and the entire team during the 2026 season. Made of polyester, in collaboration with Kappa, it features the Pertamina Enduro VR46 Racing Team logo on the chest and back and the team's sponsor logos on the sleeves. Contrasting black and red details complete the design.
-                                Washing: Medium washing in cold water ; Do not bleach ; No drum ; Ironing Max 110 ; Do not dry clean
-                                Composition: 100%POLYESTER
+                                {product.description}
                             </p>
                         </p>
                     </div>

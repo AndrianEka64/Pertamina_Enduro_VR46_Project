@@ -5,7 +5,7 @@ const Footer = () => {
                 <div className="container mx-auto px-5">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 py-10 divide-y-2 lg:divide-y-0 lg:divide-x-2 divide-yellow-300">
                         <div className="dark:text-white font-semibold">
-                            <img src="logovr46.jpg" className="mb-5 md:w-64" alt="" />
+                            <img src="/logovr46.jpg" className="mb-5 md:w-64" alt="" />
                             <p className="text-md text-gray-300 mb-3 leading-relaxed">
                                 Official landing page of <span className="font-semibold text-yellow-400">
                                     Pertamina Enduro VR46 Racing Team. </span>

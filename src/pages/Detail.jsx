@@ -1,16 +1,41 @@
-import { Swiper } from "swiper/react"
-import { SwiperSlide } from "swiper/react"
-import { Navigation } from "swiper/modules"
-import { Pagination } from "swiper/modules"
-import { Link } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import { FaShoppingCart } from "react-icons/fa"
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import Footer from "../components/Footerr"
 import Navbar from "../components/Navbarr"
+import { useEffect, useState } from "react"
+import api from "../service/api"
 
 const Detail = () => {
+    const { id } = useParams();
+    const [product, setProduct] = useState(null);
+    const [recommendations, setRecommendations] = useState([]);
+    useEffect(() => {
+        const fetchAllProducts = async () => {
+            try {
+                const response = await api.get("/product");
+                const filtered = response.data.data.filter(item => item.id !== parseInt(id));
+                setRecommendations(filtered.slice(0, 4));
+            } catch (error) {
+                console.error("Error fetching recommendations:", error);
+            }
+        };
+
+        fetchAllProducts();
+    }, [id]);
+    useEffect(() => {
+        const fetchProductDetail = async () => {
+            try {
+                const response = await api.get(`/product/${id}`);
+                setProduct(response.data.data);
+            } catch (error) {
+                console.error("Error fetching detail:", error);
+            }
+        };
+        fetchProductDetail();
+    }, [id]);
     return (
         <>
             <Navbar></Navbar>
@@ -18,40 +43,27 @@ const Detail = () => {
                 <div className="max-w-7xl mx-auto px-6 py-24 text-white">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                         <div>
-                            <Swiper className="rounded-2xl" modules={[Navigation, Pagination]} navigation pagination={{ clickable: true }}>
-                                <SwiperSlide>
-                                    <img src="/merch2.webp" className="h-11/12 w-full object-cover rounded-2xl" />
-                                </SwiperSlide>
-                                <SwiperSlide>
-                                    <img src="/merch2_2.webp" className="h-11/12 w-full object-cover" />
-                                </SwiperSlide>
-                                <SwiperSlide>
-                                    <img src="/merch2_3.webp" className="h-11/12 w-full object-cover" />
-                                </SwiperSlide>
-                                <SwiperSlide>
-                                    <img src="/merch2_4.webp" className="h-11/12 w-full object-cover" />
-                                </SwiperSlide>
-                            </Swiper>
+                            <img src={product?.image} className="h-11/12 w-full object-cover rounded-2xl" />
                         </div>
                         <div className="text-white">
-                            <p className="text-md text-gray-200">Merchadise</p>
-                            <h1 className="text-4xl font-bold">Pertamina Enduro VR46 Racing Team T-Shirt (yellow)</h1>
+                            <p className="text-md text-gray-200">{product?.category}</p>
+                            <h1 className="text-4xl font-bold">{product?.name}</h1>
                             <p className="mt-2 text-yellow-400"><span className="text-gray-200">( 4,5 )</span> ★★★★★</p>
                             <div className="flex gap-2">
-                                <p className="mt-4 text-5xl bg-red-600 p-2 rounded-tl-2xl rounded-br-2xl">$ 29.99</p>
+                                <p className="mt-4 text-5xl bg-red-600 p-2 rounded-tl-2xl rounded-br-2xl">$ {product?.price}</p>
                                 <p className="mt-4 text-gray-200 text-lg line-through">$ 35.50</p>
                             </div>
                             <hr className="my-8"></hr>
                             <p className="text-md text-gray-200">Description</p>
                             <p className="text-md text-gray-200 mt-3">
                                 <p className="text-justify">
-                                    Official replica T-shirt of the Pertamina Enduro VR46 Racing Team worn by Franco Morbidelli, Fabio Di Giannantonio and the entire team during the 2026 season. Made of polyester, in collaboration with Kappa, it features the Pertamina Enduro VR46 Racing Team logo on the chest and back and the team's sponsor logos on the sleeves. Contrasting black and red details complete the design.
+                                    {product?.description}
                                 </p><br></br>
                                 <span className="block">Washing: Medium washing in cold water ; Do not bleach ; No drum ; Ironing Max 110 ; Do not dry clean</span>
                                 <span className="block">Composition: 100%POLYESTER</span>
                             </p>
                             <hr className="my-8"></hr>
-                            <form action="" method="post">
+                            <form>
                                 <p className="text-gray-200 mb-2">Size</p>
                                 <div className="grid grid-cols-5 gap-2">
                                     <label className="cursor-pointer">
@@ -79,7 +91,7 @@ const Detail = () => {
                                     <p className="text-gray-200 mb-2">Quantity</p>
                                     <input type="number" name="quantity" min="1" defaultValue="1" className="w-24 px-4 py-2 border-2 border-gray-400 bg-transparent text-white focus:outline-none focus:border-yellow-400" />
                                 </div>
-                                <button type="submit" className="w-full py-3 bg-linear-to-b from-yellow-300 to-yellow-600 hover:from-yellow-400 hover:to-yellow-700 font-semibold text-black rounded-lg transition">Add to Cart</button>
+                                <button className="w-full py-3 bg-linear-to-b from-yellow-300 to-yellow-600 hover:from-yellow-400 hover:to-yellow-700 font-semibold text-black rounded-lg transition">Add to Cart</button>
                             </form>
                         </div>
                     </div>
@@ -88,27 +100,31 @@ const Detail = () => {
                     </div>
                     <div className="flex gap-4 overflow-y-auto my-8">
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            {[1, 2, 3, 4].map((i) => (
-                                <div key={i} className="bg-gray-300 border-2 border-gray-500 rounded-lg shadow-lg relative">
+                            {recommendations.map((item, index) => (
+                                <div key={item.id} className="bg-gray-300 border-2 border-gray-500 rounded-lg shadow-lg relative">
                                     <div className="absolute top-0 right-0">
                                         <div className="bg-red-600 rounded-bl-lg rounded-tr-lg">
-                                            <h1 className="text-white font-sans p-2 text-sm">{i}</h1>
+                                            <h1 className="text-white font-sans p-2 text-sm">{index + 1}</h1>
                                         </div>
                                     </div>
                                     <div className="bg-white w-full h-64 overflow-hidden rounded-t-lg">
-                                        <Link to="/detail">
-                                            <img src="merch2.webp" alt="merchandise" className="transition duration-300 w-full h-64 object-cover object-top hover:scale-105" />
+                                        <Link to={`/detail/${item.id}`}>
+                                            <img src={item.image} alt={item.name} className="transition duration-300 w-full h-64 object-cover object-top hover:scale-105" />
                                         </Link>
                                     </div>
                                     <div className="container mx-auto p-5">
-                                        <h2 className="text-xl font-bold text-black">Pertamina Enduro VR46 Racing Team T-Shirt</h2>
+                                        <h2 className="text-xl font-bold text-black line-clamp-1">{item.name}</h2>
                                         <div className="flex">
-                                            <p className="text-red-600 font-bold mt-2 mr-2">$29.99</p>
+                                            <p className="text-red-600 font-bold mt-2 mr-2">${item.price}</p>
                                             <p className="text-gray-600 font-bold mt-2 line-through text-sm">$35</p>
                                         </div>
                                         <div className="flex gap-3">
-                                            <Link to="/detail" className="text-center mt-4 w-full bg-linear-to-b from-yellow-300 to-yellow-600 hover:bg-transparen dark:hover:from-yellow-600 dark:hover:to-yellow-900 text-black py-2 rounded-full font-bold">Details</Link>
-                                            <button className="flex justify-center items-center mt-4 w-24 border-red-600 bg-linear-to-b from-red-500 to-red-600 hover:bg-transparen dark:hover:from-red-600 dark:hover:to-red-900 text-white py-2 rounded-full font-bold"> <FaShoppingCart className="text-lg"></FaShoppingCart></button>
+                                            <Link to={`/detail/${item.id}`} className="text-center mt-4 w-full bg-linear-to-b from-yellow-300 to-yellow-600 text-black py-2 rounded-full font-bold hover:from-yellow-400">
+                                                Details
+                                            </Link>
+                                            <button className="flex justify-center items-center mt-4 w-24 bg-linear-to-b from-red-500 to-red-600 text-white py-2 rounded-full font-bold hover:from-red-600">
+                                                <FaShoppingCart className="text-lg" />
+                                            </button>
                                         </div>
                                     </div>
                                 </div>

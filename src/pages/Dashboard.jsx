@@ -1,10 +1,23 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import DashboardContent from "../components/DashboardContent"
 import Sidebar from "../components/Sidebar"
 import { FaBars } from "react-icons/fa"
+import { useNavigate } from "react-router-dom"
+import api from "../service/api"
 
 const Dahsboard = () => {
+    const navigate = useNavigate();
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    useEffect(() => {
+        api.get("/user")
+            .then(res => {
+                console.log("USER:", res.data);
+            })
+            .catch(() => {
+                console.log("UNAUTHORIZED");
+                navigate("/login");
+            });
+    }, []);
     return (
         <>
             <div className="flex h-screen flex-col md:flex-row">

@@ -2,11 +2,15 @@ import { useEffect, useState } from "react"
 import DashboardContent from "../components/DashboardContent"
 import Sidebar from "../components/Sidebar"
 import { FaBars } from "react-icons/fa"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
+import PopupTrue from "../components/PopupTrue"
 import api from "../service/api"
 
 const Dahsboard = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const [popupSuccess, setPopupSuccess] = useState(false);
+    const [popupMessage, setPopupMessage] = useState("");
     const [sidebarOpen, setSidebarOpen] = useState(false);
     useEffect(() => {
         api.get("/user")
@@ -17,9 +21,22 @@ const Dahsboard = () => {
                 console.log("UNAUTHORIZED");
                 navigate("/login");
             });
-    }, []);
+    }, [navigate]);
+    useEffect(() => {
+        if (location.state?.popupSuccess) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setPopupSuccess(true);
+            setPopupMessage(location.state.message);
+            setTimeout(() => {
+                setPopupSuccess(false);
+            }, 3000);
+        }
+    }, [location.state]);
+
+
     return (
         <>
+            <PopupTrue show={popupSuccess} message={popupMessage} onClose={() => setPopupSuccess(false)} />
             <div className="flex h-screen flex-col md:flex-row">
                 <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}></Sidebar>
                 <div className="flex-1 overflow-auto">

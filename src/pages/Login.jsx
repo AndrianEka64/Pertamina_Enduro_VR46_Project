@@ -1,12 +1,26 @@
 import { useState } from "react";
 import api from "../service/api"
 import { useNavigate } from "react-router-dom";
+import PopupTrue from "../components/PopupTrue";
+import PopupFalse from "../components/PopupFalse";
+import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
 const Login = () => {
+    const [popupSuccess, setPopupSuccess] = useState(false);
+    const [popupError, setPopupError] = useState(false);
+    const [popupMessage, setPopupMessage] = useState(false);
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const location = useLocation();
+    useEffect(() => {
+        if (location.state?.popupSuccess) {
+            setPopupMessage(location.state.message);
+            setPopupSuccess(true);
+        }
+    }, [location.state]);
     const handleLogin = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -19,15 +33,22 @@ const Login = () => {
             localStorage.setItem("token", res.data.token);
             localStorage.setItem("user", JSON.stringify(res.data.user));
             console.log("LOGIN SUCCESS:", res.data);
-            alert("login successfully");
-            navigate("/dashboard");
+            navigate("/dashboard", {
+                state: {
+                    popupSuccess: true,
+                    message: "login successfully"
+                }
+            });
         } catch (err) {
             if (err.response?.status === 401) {
-                alert("Email atau password salah");
+                setPopupMessage("Email atau password salah");
+                setPopupError(true);
             } else if (err.response?.status === 422) {
-                alert("Form tidak valid");
+                setPopupMessage("Form Tidak Valid");
+                setPopupError(true);
             } else {
-                alert("Terjadi kesalahan server");
+                setPopupMessage("Terjadi Kesalahan Server");
+                setPopupError(true);
             }
         } finally {
             setLoading(false);
@@ -36,6 +57,8 @@ const Login = () => {
 
     return (
         <>
+            <PopupTrue message={popupMessage} show={popupSuccess} onClose={() => setPopupSuccess(false)}></PopupTrue>
+            <PopupFalse message={popupMessage} show={popupError} onClose={() => setPopupError(false)}></PopupFalse>
             <div className="min-h-screen flex items-center justify-center bg-radial-[at_0%_0%] from-yellow-300 to-white to-75% dark:to-black dark:to-75%">
                 <div className="w-screen mx-auto max-w-md space-y-4 rounded-2xl shadow-xl/30 dark:shadow-yellow-300 border-2 border-gray-300 bg-gray-100 p-10 dark:border-yellow-300 dark:bg-linear-to-bl dark:from-gray-700 dark:to-black">
                     <div className="flex justify-center">

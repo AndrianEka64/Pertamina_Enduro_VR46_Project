@@ -11,7 +11,7 @@ const Input = ({ label, type, name, value, onChange }) => (
         </label>
     </div>
 );
-const EditProduct = ({ editOpen, editClose, product, onSuccess }) => {
+const EditProduct = ({ editOpen, editClose, product, onSuccess, onError }) => {
     const [form, setForm] = useState({
         name: "",
         price: "",
@@ -86,13 +86,16 @@ const EditProduct = ({ editOpen, editClose, product, onSuccess }) => {
             if (res?.data?.data) {
                 onSuccess(res.data.data);
             }
-            alert("Product updated successfully!");
             editClose();
         } catch (err) {
             console.log(err.response?.data);
-            alert("Failed to update product!");
+            onError(
+                err.response?.data?.message ||
+                "Gagal mengupdate product"
+            );
         }
-    }
+    };
+
     if (!editOpen) return null;
     return (
         <>

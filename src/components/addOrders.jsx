@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import api from "../service/api";
 
-const AddOrders = ({ apOpen, apClose, refreshData }) => {
+const AddOrders = ({ apOpen, apClose, refreshData, onSuccess, onError }) => {
     const [customerName, setCustomerName] = useState("");
     const [productId, setProductId] = useState("");
     const [products, setProducts] = useState([]);
+    const [search, setSearch] = useState("");
     useEffect(() => {
         if (apOpen) {
             api.get("/product").then(res => setProducts(res.data.data));
@@ -12,21 +13,36 @@ const AddOrders = ({ apOpen, apClose, refreshData }) => {
     }, [apOpen]);
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!customerName || !productId) {
+            onError("Customer name dan product wajib diisi");
+            return;
+        }
         try {
             await api.post("/orders", {
                 customer_name: customerName,
                 product_id: productId
             });
-            alert("Order created successfully!");
+            onSuccess("Order added successfully");
             setCustomerName("");
             setProductId("");
             apClose();
             refreshData();
+
         } catch (error) {
-            console.error(error);
-            alert("Failed to add order");
+            console.error(error.response?.data || error);
+            onError(
+                error.response?.data?.message ||
+                "Orders added failed!"
+            );
         }
     };
+    const filteredProducts = search === ""
+        ? products.slice(0, 3)
+        : products
+            .filter(p =>
+                p.name.toLowerCase().includes(search.toLowerCase())
+            )
+            .slice(0, 3);;
     if (!apOpen) return null;
     return (
         <div className="fixed inset-0 z-50 grid place-content-center bg-black/65 p-4">
@@ -39,9 +55,10 @@ const AddOrders = ({ apOpen, apClose, refreshData }) => {
                     <Input label="Customer Name" type="text" value={customerName} onChange={(e) => setCustomerName(e.target.value)} />
                     <div className="relative">
                         <label className="text-xs text-gray-400 absolute -top-2 left-3 bg-gray-900 px-1 z-10">Select Product</label>
+                        <input type="text" placeholder="Search product..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full mb-6 h-10 rounded ring-2 ring-gray-500 px-4 bg-gray-900 text-white focus:ring-yellow-500 outline-none" />
                         <select required className="w-full h-10 rounded ring-2 ring-gray-500 px-4 bg-gray-900 text-white focus:ring-yellow-500 outline-none" value={productId} onChange={(e) => setProductId(e.target.value)} >
                             <option value="">-- Choose Product --</option>
-                            {products.map(p => (
+                            {filteredProducts.map(p => (
                                 <option key={p.id} value={p.id}>{p.name} - ${p.price}</option>
                             ))}
                         </select>

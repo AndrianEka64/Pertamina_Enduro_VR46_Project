@@ -8,8 +8,14 @@ import AddOrders from "./addOrders";
 import { useEffect, useState } from "react";
 import api from "../service/api";
 import EditOrders from "./EditOrders";
+import PopupTrue from "../components/PopupTrue";
+import PopupFalse from "../components/PopupFalse";
+import { TbUvIndex } from "react-icons/tb";
 
 const OrdersContent = () => {
+    const [popupSuccess, setPopupSuccess] = useState(false);
+    const [popupError, setPopupError] = useState(false);
+    const [popupMessage, setPopupMessage] = useState("");
     const [orders, setOrders] = useState([]);
     const [openAddOrders, setOpenAddOrders] = useState(false)
     const [openEditOrders, setOpenEditOrders] = useState(false)
@@ -27,22 +33,46 @@ const OrdersContent = () => {
         fetchOrders();
     }, []);
     const handleEditClick = (order) => {
-        setSelectedOrder(order); 
-        setOpenEditOrders(true); 
+        setSelectedOrder(order);
+        setOpenEditOrders(true);
     };
     const handleDelete = async (id) => {
-        if (window.confirm("Yakin ingin menghapus order ini?")) {
-            try {
-                await api.delete(`/orders/delete/${id}`);
-                fetchOrders();
-            } catch (err) {
-                console.error(err.response?.data || err);
-                alert("Gagal menghapus data");
-            }
+        if (!window.confirm("Are you sure to delete this oreder?")) return;
+        try {
+            const res = await api.delete(`/orders/delete/${id}`);
+            setPopupMessage(res.data.message || "Orders deleted successfully!");
+            setPopupSuccess(true);
+            setPopupError(false);
+            fetchOrders();
+        } catch (err) {
+            console.error(err.response?.data || err);
+            setPopupMessage(
+                err.response?.data?.message || "Orders deleted failed!"
+            );
+            setPopupError(true);
+            setPopupSuccess(false);
         }
     };
     return (
         <>
+            <PopupTrue show={popupSuccess} message={popupMessage} onClose={() => setPopupSuccess(false)} />
+            <PopupFalse show={popupError} message={popupMessage} onClose={() => setPopupError(false)} />
+            <EditOrders
+                apOpen={openEditOrders}
+                apClose={() => setOpenEditOrders(false)}
+                refreshData={fetchOrders}
+                orderData={selectedOrder}
+                onSuccess={(msg) => {
+                    setPopupMessage(msg);
+                    setPopupSuccess(true);
+                    setPopupError(false);
+                }}
+                onError={(msg) => {
+                    setPopupMessage(msg);
+                    setPopupError(true);
+                    setPopupSuccess(false);
+                }}
+            />
             <div className="max-w-full px-10 py-8 dark:bg-gray-900 min-h-screen">
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold dark:text-white tracking-wide">Orders</h1>
@@ -54,21 +84,21 @@ const OrdersContent = () => {
                         <div className="flex items-center justify-between">
                             <h2 className="text-white font-semibold text-sm flex"><FaShoppingBag className="text-lg mr-2"></FaShoppingBag>Data Orders | {orders.length} items</h2>
                             <div className="flex gap-2">
-                                <div class="relative">
-                                    <input class="text-white appearance-none border-2 pl-10 border-gray-800 hover:border-gray-800 transition-colors rounded-md w-full py-2 px-3 leading-tight focus:outline-none focus:ring-yellow-600 focus:border-yellow-600 focus:shadow-outline" id="username" type="text" placeholder="Search Orders" />
-                                    <div class="absolute right-0 inset-y-0 flex items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-3 h-5 w-5 text-gray-400 hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <div className="relative">
+                                    <input className="text-white appearance-none border-2 pl-10 border-gray-800 hover:border-gray-800 transition-colors rounded-md w-full py-2 px-3 leading-tight focus:outline-none focus:ring-yellow-600 focus:border-yellow-600 focus:shadow-outline" id="username" type="text" placeholder="Search Orders" />
+                                    <div className="absolute right-0 inset-y-0 flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="-ml-1 mr-3 h-5 w-5 text-gray-400 hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                         </svg>
                                     </div>
-                                    <div class="absolute left-0 inset-y-0 flex items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ml-3 text-gray-400 hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <div className="absolute left-0 inset-y-0 flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 ml-3 text-gray-400 hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                         </svg>
                                     </div>
                                 </div>
-                                <button onClick={() => setOpenAddOrders(true)} class="rounded-lg border border-yellow-600 bg-linear-to-b from-yellow-300 to-yellow-600 hover:bg-transparen dark:hover:from-yellow-600 dark:hover:to-yellow-900 p-2 text-sm font-medium dark:text-white transition-colors flex"><FaRegPlusSquare className="text-lg mr-2"></FaRegPlusSquare>Add Orders</button>
-                                <AddOrders apOpen={openAddOrders} apClose={() => setOpenAddOrders(false)} refreshData={fetchOrders}></AddOrders>
+                                <button onClick={() => setOpenAddOrders(true)} className="rounded-lg border border-yellow-600 bg-linear-to-b from-yellow-300 to-yellow-600 hover:bg-transparen dark:hover:from-yellow-600 dark:hover:to-yellow-900 p-2 text-sm font-medium dark:text-white transition-colors flex"><FaRegPlusSquare className="text-lg mr-2"></FaRegPlusSquare>Add Orders</button>
+                                <AddOrders apOpen={openAddOrders} apClose={() => setOpenAddOrders(false)} refreshData={fetchOrders} onSuccess={(msg) => { setPopupMessage(msg); setPopupSuccess(true); setPopupError(false); }} onError={(msg) => { setPopupMessage(msg); setPopupError(true); setPopupSuccess(false); }}></AddOrders>
                             </div>
                         </div>
                         <div className="flex items-center justify-between text-gray-400">
@@ -90,9 +120,9 @@ const OrdersContent = () => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-800 text-gray-200">
-                                {orders.map((order) => (
-                                    <tr key={order} className="hover:bg-gray-800/40 transition">
-                                        <td className="py-3">{order.id}</td>
+                                {orders.map((order, index) => (
+                                    <tr key={order.id} className="hover:bg-gray-800/40 transition">
+                                        <td className="py-3">{index + 1 }</td>
                                         <td className="py-3">{order.name}</td>
                                         <td className="py-3">{order.product_name}</td>
                                         <td className="py-3">{order.order_date}</td>
@@ -108,9 +138,8 @@ const OrdersContent = () => {
                                         </td>
                                         <td className="py-3">
                                             <div className="flex gap-2">
-                                                <EditOrders apOpen={openEditOrders} apClose={() => setOpenEditOrders(false)} refreshData={fetchOrders} orderData={selectedOrder}></EditOrders>
-                                                <button onClick={() => handleEditClick(order)} class="rounded-lg border border-yellow-600 bg-linear-to-b from-yellow-300 to-yellow-600 hover:bg-transparen dark:hover:from-yellow-600 dark:hover:to-yellow-900 p-2 text-sm font-medium dark:text-white transition-colors"><FaPen className="text-lg"></FaPen></button>
-                                                <button onClick={() => handleDelete(order.id)} class="rounded-lg border border-red-600 bg-linear-to-b from-red-400 to-red-600 hover:bg-transparen dark:hover:from-red-600 dark:hover:to-red-900 p-2 text-sm font-medium dark:text-white transition-colors"><FaTrashAlt className="text-lg"></FaTrashAlt></button>
+                                                <button onClick={() => handleEditClick(order)} className="rounded-lg border border-yellow-600 bg-linear-to-b from-yellow-300 to-yellow-600 hover:bg-transparen dark:hover:from-yellow-600 dark:hover:to-yellow-900 p-2 text-sm font-medium dark:text-white transition-colors"><FaPen className="text-lg"></FaPen></button>
+                                                <button onClick={() => handleDelete(order.id)} className="rounded-lg border border-red-600 bg-linear-to-b from-red-400 to-red-600 hover:bg-transparen dark:hover:from-red-600 dark:hover:to-red-900 p-2 text-sm font-medium dark:text-white transition-colors"><FaTrashAlt className="text-lg"></FaTrashAlt></button>
                                             </div>
                                         </td>
                                     </tr>

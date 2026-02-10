@@ -3,21 +3,27 @@ import { FaTachometerAlt } from "react-icons/fa"
 import { FaShoppingBag } from "react-icons/fa"
 import { FaBoxOpen } from "react-icons/fa"
 import { FaSignOutAlt } from "react-icons/fa"
+import { useNavigate } from "react-router-dom";
 import api from "../service/api"
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
+    const navigate = useNavigate();
     const handleLogout = async () => {
         try {
             await api.get("/logout");
-            alert("logged out successfully");
-        } catch {
-            alert("Logout error (token mungkin sudah tidak valid)");
+        } catch (err) {
+            console.log("Logout error:", err);
         } finally {
             localStorage.removeItem("token");
             localStorage.removeItem("user");
-            window.location.href = "/login";
+            navigate("/login", {
+                state: {
+                    popupSuccess: true,
+                    message: "Logout successfully"
+                }
+            });
         }
-    }
+    };
     return (
         <>
             <div onClick={() => setSidebarOpen(false)} className={`fixed inset-0 bg-black/50 z-40 md:hidden transition-opacity ${sidebarOpen ? "opacity-100 visible" : "opacity-0 invisible"}`}></div>

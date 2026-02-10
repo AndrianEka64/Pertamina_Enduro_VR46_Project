@@ -7,6 +7,9 @@ import Product from "./pages/Product";
 import Orders from "./pages/Orders";
 import Detail from "./pages/Detail";
 import ProtectedRoute from "./components/ProtectedRoute";
+import PagetNotFound from "./pages/PageNotFound";
+import PopupFalse from "./components/PopupFalse";
+import PopupTrue from "./components/PopupTrue";
 
 function App() {
   return (
@@ -18,13 +21,14 @@ function App() {
           <Route path="/detail/:id" element={<Detail></Detail>}></Route>
 
           <Route path="/login" element={<Login></Login>}></Route>
+          <Route path="/*" element={<PagetNotFound></PagetNotFound>}></Route>
 
           <Route element={<ProtectedRoute/>}>
             <Route path="/dashboard" element={<Dahsboard></Dahsboard>}></Route>
             <Route path="/product" element={<Product></Product>}></Route>
             <Route path="/orders" element={<Orders></Orders>}></Route>
           </Route>
-          <Route path="*" element={<Navigate to="/login" />} />
+          <Route path="*" element={<Navigate to="/*" />} />
         </Routes>
       </BrowserRouter>
     </>

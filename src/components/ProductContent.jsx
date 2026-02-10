@@ -11,6 +11,8 @@ import Modal from "./Modal";
 import FooterDashboard from "./FooterDashboard";
 import AddProduct from "./AddProduct";
 import EditProduct from "./EditProduct";
+import PopupTrue from "../components/PopupTrue";
+import PopupFalse from "../components/PopupFalse";
 
 const ProductContent = () => {
     const [selectedProduct, setSelectedProduct] = useState(null)
@@ -18,17 +20,29 @@ const ProductContent = () => {
     const [openAddProduct, setOpenAddProduct] = useState(false)
     const [openEditProduct, setOpenEditProduct] = useState(false)
     const [products, setProducts] = useState([]);
+    const [popupSuccess, setPopupSuccess] = useState(false);
+    const [popupError, setPopupError] = useState(false);
+    const [popupMessage, setPopupMessage] = useState("");
     const handleAddSuccess = (newProduct) => {
         setProducts(prev => [...prev, newProduct]);
+        setPopupMessage("Product added successfully");
+        setPopupSuccess(true);
+        setPopupError(false);
     };
     useEffect(() => {
         api.get("/product")
-            .then(res => setProducts(res.data.data ?? res.data))
-            .catch(err => console.log(err));
+            .then(res => {
+                const data = res.data?.data ?? res.data;
+                setProducts(Array.isArray(data) ? data : []);
+            })
+            .catch(err => {
+                console.log(err);
+                setProducts([]);
+            });
     }, []);
     const handleDelete = async (id) => {
         const confirmDelete = window.confirm(
-            "Yakin mau menghapus product ini?"
+            "Are you sure you want to delete this product?"
         );
         if (!confirmDelete) return;
         try {
@@ -36,19 +50,48 @@ const ProductContent = () => {
             setProducts(prev =>
                 prev.filter(product => product.id !== id)
             );
-            alert("Product berhasil dihapus");
+            setPopupMessage("Product deleted successfully!");
+            setPopupSuccess(true);
+            setPopupError(false);
         } catch (error) {
             console.error(error.response?.data || error);
-            alert("Gagal menghapus data");
+            setPopupMessage(
+                error.response?.data?.message || "Product deleted failed!"
+            );
+            setPopupError(true);
+            setPopupSuccess(false);
         }
     };
     return (
         <>
+            <PopupTrue show={popupSuccess} message={popupMessage} onClose={() => setPopupSuccess(false)} />
+            <PopupFalse show={popupError} message={popupMessage} onClose={() => setPopupError(false)} />
+            <EditProduct
+                editOpen={openEditProduct}
+                editClose={() => setOpenEditProduct(false)}
+                product={selectedProduct}
+                onSuccess={(updatedProduct) => {
+                    setProducts(prev =>
+                        prev.map(p =>
+                            p.id === updatedProduct.id ? updatedProduct : p
+                        )
+                    );
+                    setPopupMessage("Product updated successfully");
+                    setPopupSuccess(true);
+                    setPopupError(false);
+                }}
+                onError={(message) => {
+                    setPopupMessage(message);
+                    setPopupError(true);
+                    setPopupSuccess(false);
+                }}
+            />
+
             <div className="max-w-full px-10 py-8 dark:bg-gray-900 min-h-screen">
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold dark:text-white tracking-wide">Product</h1>
                     <p className="text-gray-400 text-sm mt-1">Manage your product inventory, pricing, and availability</p>
-                    <Breadcrumb></Breadcrumb    >
+                    <Breadcrumb></Breadcrumb>
                 </div>
                 <div className="rounded-xl bg-[#0B0F1A] border border-gray-800">
                     <div className="px-6 py-4 h-24 border-b border-gray-800">
@@ -69,7 +112,10 @@ const ProductContent = () => {
                                     </div>
                                 </div>
                                 <button onClick={() => setOpenAddProduct(true)} className="rounded-lg border border-yellow-600 bg-linear-to-b from-yellow-300 to-yellow-600 hover:bg-transparen dark:hover:from-yellow-600 dark:hover:to-yellow-900 p-1 md:p-2 text-sm font-medium dark:text-white transition-colors flex"><FaRegPlusSquare className="text-sm md:text-lg mr-2"></FaRegPlusSquare>Add Product</button>
-                                <AddProduct apOpen={openAddProduct} apClose={() => setOpenAddProduct(false)} onSuccess={handleAddSuccess}></AddProduct>
+                                <AddProduct apOpen={openAddProduct} apClose={() => setOpenAddProduct(false)} onSuccess={handleAddSuccess} onError={(message) => {
+                                    setPopupMessage(message); setPopupError(true);
+                                    setPopupSuccess(false);
+                                }}></AddProduct>
                             </div>
                         </div>
                         <div className="flex items-center justify-between text-gray-400">
@@ -91,18 +137,18 @@ const ProductContent = () => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-800 text-gray-200">
-                                {products.map((p, i) => (
+                                {products.filter(p => p && p.name).map((p, i) => (
                                     <tr key={i} className="hover:bg-gray-800/40 transition">
                                         <td className="py-3">{i + 1}</td>
-                                        <td className="py-3">{p.name}</td>
-                                        <td className="py-3">${p.price}</td>
-                                        <td className="py-3">{p.stock}</td>
-                                        <td className="py-3">{p.category}</td>
+                                        <td className="py-3">{p?.name}</td>
+                                        <td className="py-3">${p?.price}</td>
+                                        <td className="py-3">{p?.stock}</td>
+                                        <td className="py-3">{p?.category}</td>
                                         <td className="py-3">
-                                            <div className={`text-center md:w-24 rounded-lg border p-1 text-sm font-medium ${p.status === "available"
+                                            <div className={`text-center md:w-24 rounded-lg border p-1 text-sm font-medium ${p?.status === "available"
                                                 ? "border border-green-600 bg-linear-to-b from-green-400/50 to-green-600/50 hover:bg-transparen dark:hover:from-green-600 dark:hover:to-green-900"
                                                 : "border border-red-600 bg-linear-to-b from-red-400 to-red-600 hover:bg-transparen dark:hover:from-red-600 dark:hover:to-red-900"}`}>
-                                                {p.status}
+                                                {p?.status}
                                             </div>
                                         </td>
                                         <td className="py-3">
@@ -115,14 +161,6 @@ const ProductContent = () => {
                                         </td>
                                     </tr>
                                 ))}
-                                <EditProduct editOpen={openEditProduct}
-                                    editClose={() => setOpenEditProduct(false)}
-                                    product={selectedProduct}
-                                    onSuccess={(updatedProduct) => {
-                                        setProducts(prev =>
-                                            prev.map(p => p.id === updatedProduct.id ? updatedProduct : p)
-                                        );
-                                    }}></EditProduct>
                             </tbody>
                         </table>
                     </div>

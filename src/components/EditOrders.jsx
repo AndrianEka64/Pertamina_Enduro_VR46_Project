@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../service/api";
 
-const EditOrders = ({ apOpen, apClose, refreshData, orderData }) => {
+const EditOrders = ({ apOpen, apClose, refreshData, orderData, onSuccess, onError }) => {
     const [status, setStatus] = useState("");
     useEffect(() => {
         if (apOpen && orderData) {
@@ -11,16 +11,23 @@ const EditOrders = ({ apOpen, apClose, refreshData, orderData }) => {
     }, [apOpen, orderData])
     const handleUpdate = async (e) => {
         e.preventDefault();
+        if (!status) {
+            onError("Orders Status has ben required!");
+            return;
+        }
         try {
             await api.put(`/orders/update/${orderData.id}`, {
                 status: status
             });
-            alert("Order status updated!");
+            onSuccess("Order Status Updated successfully!");
             apClose();
             refreshData();
         } catch (error) {
-            console.error(error);
-            alert("Failed to update status");
+            console.error(error.response?.data || error);
+            onError(
+                error.response?.data?.message ||
+                "Order Status updated failed!"
+            );
         }
     };
     if (!apOpen) return null;

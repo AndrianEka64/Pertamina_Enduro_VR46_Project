@@ -1,6 +1,6 @@
 import { useState } from "react";
 import api from "../service/api";
-const AddProduct = ({ apOpen, apClose, onSuccess }) => {
+const AddProduct = ({ apOpen, apClose, onSuccess, onError }) => {
     const [name, setName] = useState("");
     const [price, setPrice] = useState("");
     const [stock, setStock] = useState("");
@@ -30,25 +30,33 @@ const AddProduct = ({ apOpen, apClose, onSuccess }) => {
             const res = await api.post("/product", fd, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
+            if (!res.data || res.data.success === false) {
+                if (onError) {
+                    onError(res.data?.message || "Product added failed!");
+                }
+                return;
+            }
             onSuccess(res.data.data);
             resetForm();
-            alert("Product added successfully!");
             apClose();
         } catch (err) {
             console.log(err.response?.data);
-            alert("Product added failed!");
+            if (onError) {
+                onError(err.response?.data?.message || "Product added failed!");
+            }
         }
+
     };
     if (!apOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 grid place-content-center bg-white/20 dark:bg-black/65 p-4" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div className="fixed inset-0 z-50 grid place-content-center bg-white/20 dark:bg-black/5 p-4" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
             <div className="w-full max-w-7xl rounded-lg border border-gray-700 bg-white shadow-lg dark:bg-gray-900">
                 <div className="flex items-start justify-between p-6 border-b border-gray-700">
                     <h2 id="modalTitle" className="text-xl font-bold sm:text-2xl dark:text-white">
                         Add Product
                     </h2>
-                    <button  onClick={apClose} type="button" className="rounded-full p-2 text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <button onClick={apClose} type="button" className="rounded-full p-2 text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800">
                         ✕
                     </button>
                 </div>

@@ -6,6 +6,7 @@ const AddOrders = ({ apOpen, apClose, refreshData, onSuccess, onError }) => {
     const [productId, setProductId] = useState("");
     const [products, setProducts] = useState([]);
     const [search, setSearch] = useState("");
+    const [showDropdown, setShowDropdown] = useState(false);
     useEffect(() => {
         if (apOpen) {
             api.get("/product").then(res => setProducts(res.data.data));
@@ -55,13 +56,22 @@ const AddOrders = ({ apOpen, apClose, refreshData, onSuccess, onError }) => {
                     <Input label="Customer Name" type="text" value={customerName} onChange={(e) => setCustomerName(e.target.value)} />
                     <div className="relative">
                         <label className="text-xs text-gray-400 absolute -top-2 left-3 bg-gray-900 px-1 z-10">Select Product</label>
-                        <input type="text" placeholder="Search product..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full mb-6 h-10 rounded ring-2 ring-gray-500 px-4 bg-gray-900 text-white focus:ring-yellow-500 outline-none" />
-                        <select required className="w-full h-10 rounded ring-2 ring-gray-500 px-4 bg-gray-900 text-white focus:ring-yellow-500 outline-none" value={productId} onChange={(e) => setProductId(e.target.value)} >
-                            <option value="">-- Choose Product --</option>
-                            {filteredProducts.map(p => (
-                                <option key={p.id} value={p.id}>{p.name} - ${p.price}</option>
-                            ))}
-                        </select>
+                        <input type="text" placeholder="Search product..." value={search} onChange={(e) => { setSearch(e.target.value); setShowDropdown(true); }} onFocus={() => setShowDropdown(true)} className="w-full h-10 rounded ring-2 ring-gray-500 px-4 bg-gray-900 text-white focus:ring-yellow-500 outline-none" />
+                        {showDropdown && (
+                            <div className="absolute z-20 mt-2 w-full max-h-48 overflow-y-auto rounded-lg bg-gray-800 ring-1 ring-gray-600">
+                                {filteredProducts.length > 0 ? (
+                                    filteredProducts.map(p => (
+                                        <div key={p.id} onClick={() => { setProductId(p.id); setSearch(p.name); setShowDropdown(false); }} className="cursor-pointer px-4 py-2 text-sm text-white hover:bg-yellow-500 hover:text-black transition" >
+                                            {p.name} - ${p.price}
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="px-4 py-2 text-sm text-gray-400">
+                                        Product not found
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
                     <button type="submit" className="w-full rounded-lg bg-yellow-500 py-3 font-bold text-black hover:bg-yellow-600 transition">
                         Submit Order

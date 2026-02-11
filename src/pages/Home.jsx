@@ -154,15 +154,15 @@ const Home = () => {
                     <form action="#" className="space-y-4 rounded-tl-4xl rounded-br-4xl border-2 border-gray-300 p-6 bg-linear-to-b from-gray-700 to-black">
                         <h1 className="text-white text-2xl font-bold py-5 text-center italic">SEND US A MESSAGE</h1>
                         <div>
-                            <label className="block text-sm font-medium text-gray-900 dark:text-white" for="name">Name</label>
+                            <label className="block text-sm font-medium text-gray-900 dark:text-white" htmlFor="name">Name</label>
                             <input className="p-2 mt-1 w-full border-2 border-yellow-600 rounded-lg bg-gray-700 dark:text-white hover:shadow-xl/30 hover:shadow-yellow-400 focus:shadow-yellow-400" id="name" type="text" placeholder="Your name" />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-900 dark:text-white" for="email">Email</label>
+                            <label className="block text-sm font-medium text-gray-900 dark:text-white" htmlFor="email">Email</label>
                             <input className="p-2 mt-1 w-full border-2 border-yellow-600 rounded-lg bg-gray-700 dark:text-white hover:shadow-xl/30 hover:shadow-yellow-400 focus:shadow-yellow-400" id="email" type="email" placeholder="Your email" />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-900 dark:text-white" for="message">Message</label>
+                            <label className="block text-sm font-medium text-gray-900 dark:text-white" htmlFor="message">Message</label>
                             <textarea className="p-2 mt-1 w-full border-2 border-yellow-600 resize-none rounded-lg bg-gray-700 dark:text-white hover:shadow-xl/30 hover:shadow-yellow-400 focus:shadow-yellow-400" id="message" rows="4" placeholder="Your message"></textarea>
                         </div>
                         <div className="flex justify-center">
